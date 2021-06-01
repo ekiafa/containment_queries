@@ -1,5 +1,39 @@
 import sys
+from ast import literal_eval
+import time
+def naive(tr,qu,qnum):
+    start=time.time()
+    global res
+    if int(qnum)==-1:
+        
+        res=dict()
+        counter_qu=-1
+        for i in qu:
+            counter_qu+=1
+            l=len(i)
+            res[str(counter_qu)]=[]
+            counter_tr=-1
+            for j in tr:
+                counter_tr+=1
+                common=list(set(i).intersection(j))
+                
+                if len(common)==l:
 
+                    res[str(counter_qu)].append(counter_tr)
+    else:
+        
+        res=[] 
+        counter=-1
+        for i in tr:
+            counter+=1
+            common=list(set(i).intersection(qu[int(qnum)]))
+            if len(common)==len(qu[int(qnum)]):
+                res.append(counter)
+    t=time.time()-start
+    print(res)
+    return t
+
+            
 
 
 
@@ -18,11 +52,19 @@ def main():
         method=sys.argv[4]
         
         with open(transactions ,mode='r') as trans,open(queries ,mode='r',encoding='UTF-8') as q:
-               for line in trans:
-                   print(line)
-               for line in q:
-                    print(q.readline())
-        
+                tr=[]
+                qu=[]
+                for line in trans:
+                   tr.append(literal_eval(line.rstrip("\n")))
+                   
+                for line in q:
+                    qu.append(literal_eval(q.readline().rstrip("\n")))
+        qnum=int(qnum)
+        method=int(method)
+        if method==0:
+            print("Naive method result:")
+            print("Naive Method computation time =",naive(tr,qu,qnum))
+            
 
 
 
