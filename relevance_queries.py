@@ -5,14 +5,16 @@ import sys
 
 def main():      
         
-        out=sys.argv[1]
-        =sys.argv[2]
-        source2=sys.argv[3]
-        source3=sys.argv[4]
+        transactions=sys.argv[1]
+        queries=sys.argv[2]
 
 
-        with open('out.txt' ,mode='r') as pointers:
 
+        with open(transactions ,mode='r') as trans,open(queries ,mode='r',encoding='UTF-8') as q:
+               for line in trans:
+                   print(line)
+               for line in q:
+                   print(q)
 
 
 
