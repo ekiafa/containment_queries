@@ -33,6 +33,9 @@ def naive(tr,qu,qnum):
     print(res)
     return t
 
+
+#def exact_signature_file():
+
             
 
 
@@ -63,7 +66,12 @@ def main():
         method=int(method)
         if method==0:
             print("Naive method result:")
-            print("Naive Method computation time =",naive(tr,qu,qnum))
+            print("Naive method computation time =",naive(tr,qu,qnum))
+        elif method==1:
+            sigfile=[0]*len(tr)
+            
+            print("Exact signature file method result :")
+           # print("Exact signature file method computation time =",exact_signature_file())
             
 
 
