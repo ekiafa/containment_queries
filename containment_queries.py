@@ -34,14 +34,30 @@ def naive(tr,qu,qnum):
     return t
 
 
-#def exact_signature_file():
+def exact_signature_file(tr,sigfile,qnum):
+    counter=0
+    for i in tr:
+        counter+=1
+        sig=[]
+        min_i=min(i)
+        max_i=max(i)
+        for j in range(min_i,max_i+1):
+            
+            if j in i:
+                sig.append(1)
+            else:
+                sig.append(0)
+        string_sig = [str(int) for int in sig]
+        sigfile[str(counter)]="".join(string_sig[::-1])
+    print(sigfile)
+
 
             
 
 
 
 def main():      
-        
+
         transactions=sys.argv[1]
         queries=sys.argv[2]
         # call all the queries with qnum=-1
@@ -68,9 +84,11 @@ def main():
             print("Naive method result:")
             print("Naive method computation time =",naive(tr,qu,qnum))
         elif method==1:
-            sigfile=[0]*len(tr)
             
-            print("Exact signature file method result :")
+            s = set(range(len(tr)))
+            sigfile=dict.fromkeys(s)
+            
+            print("Exact signature file method result :",exact_signature_file(tr,sigfile,qnum))
            # print("Exact signature file method computation time =",exact_signature_file())
             
 
