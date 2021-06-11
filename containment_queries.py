@@ -34,10 +34,9 @@ def naive(tr,qu,qnum):
     return t
 
 
-def exact_signature_file(tr,sigfile,qnum):
-    counter=0
-    for i in tr:
-        counter+=1
+def exact_signature_file(qu,sigfile,qnum):
+    #convert query to bitmap format
+    for i in qu:
         sig=[]
         min_i=min(i)
         max_i=max(i)
@@ -48,8 +47,8 @@ def exact_signature_file(tr,sigfile,qnum):
             else:
                 sig.append(0)
         string_sig = [str(int) for int in sig]
-        sigfile[str(counter)]="".join(string_sig[::-1])
-    print(sigfile)
+        #check if there is a transaction bitmap that satisfies query bitmap bits
+        
 
 
             
@@ -87,8 +86,23 @@ def main():
             
             s = set(range(len(tr)))
             sigfile=dict.fromkeys(s)
+            #sigfile construction
+            counter=0
+            for i in tr:
+                counter+=1
+                sig=[]
+                min_i=min(i)
+                max_i=max(i)
+                for j in range(min_i,max_i+1):
+                    
+                    if j in i:
+                        sig.append(1)
+                    else:
+                        sig.append(0)
+                string_sig = [str(int) for int in sig]
+                sigfile[str(counter)]="".join(string_sig[::-1])
             
-            print("Exact signature file method result :",exact_signature_file(tr,sigfile,qnum))
+            print("Exact signature file method result :",exact_signature_file(qu,sigfile,qnum))
            # print("Exact signature file method computation time =",exact_signature_file())
             
 
