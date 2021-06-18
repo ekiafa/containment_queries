@@ -47,8 +47,11 @@ def exact_signature_file(qu,sigfile,qnum):
             else:
                 sig.append(0)
         string_sig = [str(int) for int in sig]
+        query_bitmap="".join(string_sig[::-1])
+        print(query_bitmap)
         #check if there is a transaction bitmap that satisfies query bitmap bits
-        
+        #for i in sigfile:
+           # if i
 
 
             
