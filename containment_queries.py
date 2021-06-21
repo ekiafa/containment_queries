@@ -100,6 +100,7 @@ def exact_signature_file(qu,sigfile,qnum):
     print(res)
     return t
             
+#def exact_bitslice_signature_file():
 
 
 
@@ -131,10 +132,7 @@ def main():
             print("Naive method result:")
             print("Naive method computation time =",naive(tr,qu,qnum))
         elif method==1:
-            
-            #s = set(range(len(tr)))
-            #sigfile=dict.fromkeys(range(len(tr)))
-            #print(sigfile)
+
             sigfile={}
             #sigfile construction
             counter=-1
@@ -159,7 +157,24 @@ def main():
             
             print("Exact signature file method result :")
             print("Exact signature file method computation time =",exact_signature_file(qu,sigfile,qnum))
+        elif method==2:
+            #find the max value element in transactions array
+            m = max(map(max, tr))
             
+            bitslice={}
+            #bitslice construction
+            
+            for i in range(0,len(tr)):
+                bitslice[i]=0
+                counter=-1
+                for j in tr:
+                    counter+=1
+                    if i in j:
+                        n=2^counter
+                        bitslice[i]+=n
+            
+
+
 
 
 
