@@ -42,6 +42,7 @@ def exact_signature_file(qu,sigfile,qnum):
         counter_qu=-1
         #convert query to bitmap format
         for i in qu:
+            
             counter_qu+=1
             sig=[]
             min_i=min(i)
@@ -62,22 +63,25 @@ def exact_signature_file(qu,sigfile,qnum):
             #check if there is a transaction bitmap that satisfies query bitmap bits
             count_tr_sig=0
             for s in sigfile:
+                
                 count_tr_sig+=1
-                if int(query_bitmap) & ~int(s) == 0:
+                if int(query_bitmap) & ~int(sigfile[s]) == int(query_bitmap):
                     
                     res[str(counter_qu)].append(count_tr_sig)
     else:
         res=[]
         sig=[]
     
-        min_i=min(qu[int(qnum)])
-        max_i=max(qu[int(qnum)])
+        min_i=min(qu[qnum])
+        max_i=max(qu[qnum])
+
         for k in range(0,min_i):
             sig.append(0)
         for j in range(min_i,max_i+1):
             
-            if j in qu:
+            if j in qu[qnum]:
                 sig.append(1)
+            
             else:
                 sig.append(0)
         string_sig = [str(int) for int in sig]
@@ -86,8 +90,9 @@ def exact_signature_file(qu,sigfile,qnum):
         #check if there is a transaction bitmap that satisfies query bitmap bits
         count=0
         for s in sigfile:
+
             count+=1
-            if int(query_bitmap) & ~int(s) == 0:
+            if int(query_bitmap) & ~int(sigfile[s])== int(query_bitmap):
                 
                 res.append(count)
 
@@ -127,12 +132,16 @@ def main():
             print("Naive method computation time =",naive(tr,qu,qnum))
         elif method==1:
             
-            s = set(range(len(tr)))
-            sigfile=dict.fromkeys(s)
+            #s = set(range(len(tr)))
+            #sigfile=dict.fromkeys(range(len(tr)))
+            #print(sigfile)
+            sigfile={}
             #sigfile construction
-            counter=0
+            counter=-1
             for i in tr:
+                
                 counter+=1
+                sigfile[str(counter)]=[]
                 sig=[]
                 min_i=min(i)
                 max_i=max(i)
@@ -146,6 +155,7 @@ def main():
                         sig.append(0)
                 string_sig = [str(int) for int in sig]
                 sigfile[str(counter)]="".join(string_sig[::-1])
+                
             
             print("Exact signature file method result :")
             print("Exact signature file method computation time =",exact_signature_file(qu,sigfile,qnum))
