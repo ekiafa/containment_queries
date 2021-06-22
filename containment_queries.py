@@ -1,6 +1,9 @@
 import sys
 from ast import literal_eval
 import time
+################################
+          #naive
+################################
 def naive(tr,qu,qnum):
     start=time.time()
     global res
@@ -33,7 +36,9 @@ def naive(tr,qu,qnum):
     print(res)
     return t
 
-
+#######################################
+          #exact_signature_file
+#######################################
 def exact_signature_file(qu,sigfile,qnum):
     start=time.time()
     global res
@@ -99,7 +104,10 @@ def exact_signature_file(qu,sigfile,qnum):
     t=time.time()-start
     print(res)
     return t
-            
+###############################################
+          #exact_bitslice_signature_file
+###############################################
+             
 #def exact_bitslice_signature_file():
 
 
@@ -160,11 +168,11 @@ def main():
         elif method==2:
             #find the max value element in transactions array
             m = max(map(max, tr))
-            
+            print(m)
             bitslice={}
             #bitslice construction
             
-            for i in range(0,len(tr)):
+            for i in range(0,m+1):
                 bitslice[i]=0
                 counter=-1
                 for j in tr:
@@ -172,6 +180,8 @@ def main():
                     if i in j:
                         n=2^counter
                         bitslice[i]+=n
+            print("Exact bitslice signature file method result :")
+            print("Exact bitslice signature file method computation time =",exact_signature_file(qu,bitslice,qnum))           
             
 
 
