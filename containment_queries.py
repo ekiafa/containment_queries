@@ -1,6 +1,10 @@
+#Eftihia Kiafa AM:3003
+
 import sys
 from ast import literal_eval
 import time
+
+global original_stdout
 ################################
           #naive
 ################################
@@ -33,7 +37,14 @@ def naive(tr,qu,qnum):
             if len(common)==len(qu[int(qnum)]):
                 res.append(counter)
     t=time.time()-start
-    print(res)
+    if qnum==-1:
+        sys.stdout=open("naive.txt",mode="w")
+        print("Naive method result:")
+        print(res)
+        sys.stdout=original_stdout
+    else:
+        print("Naive method result:")
+        print(res)
     return t
 
 #######################################
@@ -102,8 +113,17 @@ def exact_signature_file(qu,sigfile,qnum):
                 res.append(count)
 
     t=time.time()-start
-    print(res)
+    if qnum==-1:
+        sys.stdout=open("sigfile.txt",mode="w")
+        print("Exact signature file method result :")
+        print(res)
+        sys.stdout=original_stdout
+    else:
+        print("Exact signature file method result :")
+        print(res)
     return t
+
+
 ###############################################
           #exact_bitslice_signature_file
 ###############################################
@@ -172,15 +192,97 @@ def exact_bitslice_signature_file(qu,bitslice,qnum):
                 res.append(count)
 
     t=time.time()-start
-    print(res)
+    if qnum==-1:
+        sys.stdout=open("bitslice.txt",mode="w")
+        print("Exact bitslice signature file method result :")
+        print(res)
+        sys.stdout=original_stdout
+    else:
+        print("Exact bitslice signature file method result :")
+        print(res)
     return t
+
+
 
 ############################################
            #inverted file 
 ############################################
 
 
+
+def intersection(a, b, n, m):
+    '''
+    :param a: given sorted array a
+    :param n: size of sorted array a
+    :param b: given sorted array b
+    :param m: size of sorted array b
+    :return: array of inter of two array or -1
+    '''
+ 
+    inter = []
+    i = j = 0
+     
+    while i < n and j < m:
+        if a[i] == b[j]:
+ 
+            # If duplicate already present in inter list
+            if len(inter) > 0 and inter[-1] == a[i]:
+                i+= 1
+                j+= 1
+ 
+            # If no duplicate is present in inter list
+            else:
+                inter.append(a[i])
+                i+= 1
+                j+= 1
+        elif a[i] < b[j]:
+            i+= 1
+        else:
+            j+= 1
+             
+    if not len(inter):
+        return [-1]
+    return inter   
+
 def inverted_file(qu,trans_element_list,qnum):
+    start=time.time()
+    global res
+    if int(qnum)==1:
+        res={}
+        counter_qu=-1
+        for i in qu:
+            counter_qu+=1
+            counter=-1
+            for j in i:
+                counter+=1
+                if counter==0:
+                    m_res=intersection(trans_element_list[j],trans_element_list[j+1],len(trans_element_list[j]),len(trans_element_list[j+1]))
+                else:
+                    m_res=intersection(m_res,trans_element_list[j],len(m_res),len(trans_element_list[j]))
+            res[i]=m_res   
+    else:
+        res=[]
+
+        counter=-1
+        for j in qu[qnum]:
+            counter+=1
+            if counter==0:
+                m_res=intersection(trans_element_list[j],trans_element_list[j+1],len(trans_element_list[j]),len(trans_element_list[j+1]))
+            else:
+                m_res=intersection(m_res,trans_element_list[j],len(m_res),len(trans_element_list[j]))
+        res=m_res
+    t=time.time()-start      
+    if qnum==-1:
+        sys.stdout=open("invfile.txt",mode="w")
+        print("Inverted file method result :")
+        print(res)
+        sys.stdout=original_stdout
+    else:
+        print("Inverted file method result :")
+        print(qnum,":",res)
+    return t  
+    
+
 
 
 
@@ -208,11 +310,14 @@ def main():
                     qu.append(literal_eval(q.readline().rstrip("\n")))
         qnum=int(qnum)
         method=int(method)
-        if method==0:
-            print("Naive method result:")
-            print("Naive method computation time =",naive(tr,qu,qnum))
-        elif method==1:
+        global original_stdout
+        original_stdout = sys.stdout
 
+        if method==0 or method==-1:
+            
+            print("Naive method computation time =",naive(tr,qu,qnum))
+        if method==1 or method==-1:
+            
             sigfile={}
             #sigfile construction
             counter=-1
@@ -235,9 +340,10 @@ def main():
                 sigfile[str(counter)]="".join(string_sig[::-1])
                 
             
-            print("Exact signature file method result :")
+           
             print("Exact signature file method computation time =",exact_signature_file(qu,sigfile,qnum))
-        elif method==2:
+        if method==2 or method==-1:
+
             #find the max value element in transactions array
             m = max(map(max, tr))
             bitslice={}
@@ -251,23 +357,26 @@ def main():
                     if i in j:
                         n=2^counter
                         bitslice[i]+=n
-            print("Exact bitslice signature file method result :")
+
+            
             print("Exact bitslice signature file method computation time =",exact_bitslice_signature_file(qu,bitslice,qnum))           
-        elif method==3:
+        if method==3 or method==-1:
+            
             #find the max value element in transactions array
             m = max(map(max, tr))
             trans_element_list={}
             # list for each transaction construction
             
             for i in range(0,m+1):
-                [i]=[]
+                trans_element_list[i]=[]
                 counter=-1
                 for j in tr:
                     counter+=1
                     if i in j:
                         
-                        trans_element_list[i].append(j)
-            print("Inverted file method result :")
+                        trans_element_list[i].append(counter)
+
+            
             print("Inverted file method computation time =",inverted_file(qu,trans_element_list,qnum))                
 
 
