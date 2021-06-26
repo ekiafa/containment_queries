@@ -108,7 +108,79 @@ def exact_signature_file(qu,sigfile,qnum):
           #exact_bitslice_signature_file
 ###############################################
              
-#def exact_bitslice_signature_file():
+def exact_bitslice_signature_file(qu,bitslice,qnum):
+    start=time.time()
+    global res
+
+    if int(qnum)==1:
+        res={}
+        counter_qu=-1
+        for i in qu:
+            
+            counter_qu+=1
+            bit=[]
+            min_i=min(i)
+            max_i=max(i)
+            res[str(counter_qu)]=[]
+            for k in range(0,min_i):
+                bit.append(0)
+
+            for j in range(min_i,max_i+1):
+                
+                if j in i:
+                    bit.append(1)
+                else:
+                    bit.append(0)
+            string_bit = [str(int) for int in bit]
+            query_bitmap="".join(string_bit[::-1])
+            
+            #check if there is a transaction bitmap that satisfies query bitmap bits
+            count_tr_bit=0
+            for s in bitslice:
+                
+                count_tr_bit+=1
+                if int(query_bitmap) & ~int(bitslice[s]) == int(query_bitmap):
+                    
+                    res[str(counter_qu)].append(count_tr_bit)
+
+    else:   
+        res=[]
+        bit=[]
+    
+        min_i=min(qu[qnum])
+        max_i=max(qu[qnum])
+
+        for k in range(0,min_i):
+            bit.append(0)
+        for j in range(min_i,max_i+1):
+            
+            if j in qu[qnum]:
+                bit.append(1)
+            
+            else:
+                bit.append(0)
+        string_bit = [str(int) for int in bit]
+        query_bitmap="".join(string_bit[::-1])
+        
+        #check if there is a transaction bitmap that satisfies query bitmap bits
+        count=0
+        for s in bitslice:
+
+            count+=1
+            if int(query_bitmap) & ~int(bitslice[s])== int(query_bitmap):
+                
+                res.append(count)
+
+    t=time.time()-start
+    print(res)
+    return t
+
+############################################
+           #inverted file 
+############################################
+
+
+def inverted_file(qu,trans_element_list,qnum):
 
 
 
@@ -168,7 +240,6 @@ def main():
         elif method==2:
             #find the max value element in transactions array
             m = max(map(max, tr))
-            print(m)
             bitslice={}
             #bitslice construction
             
@@ -181,8 +252,23 @@ def main():
                         n=2^counter
                         bitslice[i]+=n
             print("Exact bitslice signature file method result :")
-            print("Exact bitslice signature file method computation time =",exact_signature_file(qu,bitslice,qnum))           
+            print("Exact bitslice signature file method computation time =",exact_bitslice_signature_file(qu,bitslice,qnum))           
+        elif method==3:
+            #find the max value element in transactions array
+            m = max(map(max, tr))
+            trans_element_list={}
+            # list for each transaction construction
             
+            for i in range(0,m+1):
+                [i]=[]
+                counter=-1
+                for j in tr:
+                    counter+=1
+                    if i in j:
+                        
+                        trans_element_list[i].append(j)
+            print("Inverted file method result :")
+            print("Inverted file method computation time =",inverted_file(qu,trans_element_list,qnum))                
 
 
 
