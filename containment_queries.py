@@ -3,11 +3,12 @@
 import sys
 from ast import literal_eval
 import time
-
+from functools import reduce
 global original_stdout
 ################################
           #naive
 ################################
+
 def naive(tr,qu,qnum):
     start=time.time()
     global res
@@ -17,30 +18,35 @@ def naive(tr,qu,qnum):
         counter_qu=-1
         for i in qu:
             counter_qu+=1
-            l=len(i)
+            
             res[str(counter_qu)]=[]
             counter_tr=-1
             for j in tr:
                 counter_tr+=1
-                common=list(set(i).intersection(j))
+                common=list(set(qu[i]).intersection(set(tr[j])))
                 
-                if len(common)==l:
+                if sorted(common)==sorted(qu[i]):
 
                     res[str(counter_qu)].append(counter_tr)
     else:
         
         res=[] 
-        counter=-1
-        for i in tr:
-            counter+=1
-            common=list(set(i).intersection(qu[int(qnum)]))
-            if len(common)==len(qu[int(qnum)]):
-                res.append(counter)
+        
+        for i in tr:   
+            
+            common=set(sorted(tr[i])).intersection(set(sorted(qu[qnum])))
+            if sorted(common)==sorted(qu[qnum]):
+                
+                res.append(i)
+
+                
     t=time.time()-start
     if qnum==-1:
         sys.stdout=open("naive.txt",mode="w")
         print("Naive method result:")
-        print(res)
+        for i in res:
+            print (str(i)+":"+ str(res[i]))
+        
         sys.stdout=original_stdout
     else:
         print("Naive method result:")
@@ -61,15 +67,15 @@ def exact_signature_file(qu,sigfile,qnum):
             
             counter_qu+=1
             sig=[]
-            min_i=min(i)
-            max_i=max(i)
+            min_i=min(qu[i])
+            max_i=max(qu[i])
             res[str(counter_qu)]=[]
             for k in range(0,min_i):
                 sig.append(0)
 
             for j in range(min_i,max_i+1):
                 
-                if j in i:
+                if j in qu[i]:
                     sig.append(1)
                 else:
                     sig.append(0)
@@ -77,11 +83,11 @@ def exact_signature_file(qu,sigfile,qnum):
             query_bitmap="".join(string_sig[::-1])
             
             #check if there is a transaction bitmap that satisfies query bitmap bits
-            count_tr_sig=0
+            count_tr_sig=-1
             for s in sigfile:
                 
                 count_tr_sig+=1
-                if int(query_bitmap) & ~int(sigfile[s]) == int(query_bitmap):
+                if int(query_bitmap,2) & ~int(sigfile[s],2) == 0:
                     
                     res[str(counter_qu)].append(count_tr_sig)
     else:
@@ -104,11 +110,12 @@ def exact_signature_file(qu,sigfile,qnum):
         query_bitmap="".join(string_sig[::-1])
         
         #check if there is a transaction bitmap that satisfies query bitmap bits
-        count=0
+        count=-1
         for s in sigfile:
 
             count+=1
-            if int(query_bitmap) & ~int(sigfile[s])== int(query_bitmap):
+            
+            if int(query_bitmap,2) & ~int(sigfile[s],2)== 0:
                 
                 res.append(count)
 
@@ -116,13 +123,14 @@ def exact_signature_file(qu,sigfile,qnum):
     if qnum==-1:
         sys.stdout=open("sigfile.txt",mode="w")
         print("Exact signature file method result :")
-        print(res)
+        for i in res:
+            print (str(i)+":"+ str(res[i]))
+        
         sys.stdout=original_stdout
     else:
         print("Exact signature file method result :")
         print(res)
     return t
-
 
 ###############################################
           #exact_bitslice_signature_file
@@ -132,70 +140,59 @@ def exact_bitslice_signature_file(qu,bitslice,qnum):
     start=time.time()
     global res
 
-    if int(qnum)==1:
+    if int(qnum)==-1:
         res={}
-        counter_qu=-1
+        
         for i in qu:
-            
-            counter_qu+=1
-            bit=[]
-            min_i=min(i)
-            max_i=max(i)
-            res[str(counter_qu)]=[]
-            for k in range(0,min_i):
-                bit.append(0)
-
-            for j in range(min_i,max_i+1):
-                
-                if j in i:
-                    bit.append(1)
-                else:
-                    bit.append(0)
-            string_bit = [str(int) for int in bit]
-            query_bitmap="".join(string_bit[::-1])
-            
-            #check if there is a transaction bitmap that satisfies query bitmap bits
-            count_tr_bit=0
-            for s in bitslice:
-                
-                count_tr_bit+=1
-                if int(query_bitmap) & ~int(bitslice[s]) == int(query_bitmap):
+            bitslice_and=[]
+            res[i]=[]
+            for j in qu[i]:
+                bitslice_and.append(int(bitslice[j]))
                     
-                    res[str(counter_qu)].append(count_tr_bit)
+            a=reduce(lambda x,y: x & y, bitslice_and)
+                
+            c=format(a, "b")
+                
+            counter=-1
+
+            for k in c[::-1]:
+                    
+                counter+=1
+                if k=='1':
+                    res[int(i)].append(counter)
 
     else:   
         res=[]
-        bit=[]
-    
-        min_i=min(qu[qnum])
-        max_i=max(qu[qnum])
-
-        for k in range(0,min_i):
-            bit.append(0)
-        for j in range(min_i,max_i+1):
-            
-            if j in qu[qnum]:
-                bit.append(1)
-            
-            else:
-                bit.append(0)
-        string_bit = [str(int) for int in bit]
-        query_bitmap="".join(string_bit[::-1])
         
-        #check if there is a transaction bitmap that satisfies query bitmap bits
-        count=0
-        for s in bitslice:
+        bitslice_and=[]
+        
+        for i in qu[qnum]:
+        
+            bitslice_and.append(int(bitslice[i]))
+            
+        a=reduce(lambda x,y: x & y, bitslice_and)
+        
+        c=format(a, "b")
+        
+        counter=-1
 
-            count+=1
-            if int(query_bitmap) & ~int(bitslice[s])== int(query_bitmap):
-                
-                res.append(count)
+        for i in c[::-1]:
+            
+            counter+=1
+            if i=='1':
+                res.append(counter)
+            
+
+
 
     t=time.time()-start
     if qnum==-1:
         sys.stdout=open("bitslice.txt",mode="w")
+        sys.stdout.write('\n')
         print("Exact bitslice signature file method result :")
-        print(res)
+        for i in res:
+            print (str(i)+":"+ str(res[i]))
+        
         sys.stdout=original_stdout
     else:
         print("Exact bitslice signature file method result :")
@@ -209,7 +206,7 @@ def exact_bitslice_signature_file(qu,bitslice,qnum):
 ############################################
 
 
-
+"""
 def intersection(a, b, n, m):
     '''
     :param a: given sorted array a
@@ -243,11 +240,11 @@ def intersection(a, b, n, m):
     if not len(inter):
         return [-1]
     return inter   
-
+"""
 def inverted_file(qu,trans_element_list,qnum):
     start=time.time()
     global res
-    if int(qnum)==1:
+    if int(qnum)==-1:
         res={}
         counter_qu=-1
         for i in qu:
@@ -301,13 +298,18 @@ def main():
         method=sys.argv[4]
         
         with open(transactions ,mode='r') as trans,open(queries ,mode='r',encoding='UTF-8') as q:
-                tr=[]
-                qu=[]
+                tr={}
+                qu={}
+                counter=-1
                 for line in trans:
-                   tr.append(literal_eval(line.rstrip("\n")))
-                   
+                   counter+=1
+                   tr[counter]=literal_eval(line.rstrip("\n"))
+                   #tr.append(literal_eval(line.rstrip("\n")))
+                counter=-1
                 for line in q:
-                    qu.append(literal_eval(q.readline().rstrip("\n")))
+                    counter+=1
+                    qu[counter]=literal_eval(line.rstrip("\n"))
+                    #qu.append(literal_eval(q.readline().rstrip("\n")))
         qnum=int(qnum)
         method=int(method)
         global original_stdout
@@ -326,13 +328,13 @@ def main():
                 counter+=1
                 sigfile[str(counter)]=[]
                 sig=[]
-                min_i=min(i)
-                max_i=max(i)
+                min_i=min(tr[i])
+                max_i=max(tr[i])
                 for k in range(0,min_i):
                     sig.append(0)
                 for j in range(min_i,max_i+1):
                     
-                    if j in i:
+                    if j in tr[i]:
                         sig.append(1)
                     else:
                         sig.append(0)
@@ -342,24 +344,26 @@ def main():
             
            
             print("Exact signature file method computation time =",exact_signature_file(qu,sigfile,qnum))
-        if method==2 or method==-1:
+
+        if method==2 or method==-1 :
 
             #find the max value element in transactions array
-            m = max(map(max, tr))
+            
+            m = max(i for v in tr.values() for i in v)
+            
             bitslice={}
             #bitslice construction
             
             for i in range(0,m+1):
+                
                 bitslice[i]=0
-                counter=-1
                 for j in tr:
-                    counter+=1
-                    if i in j:
-                        n=2^counter
-                        bitslice[i]+=n
+                    if i in tr[j]:
+                        bitslice[i]+=pow(2,j)
 
-            
+    
             print("Exact bitslice signature file method computation time =",exact_bitslice_signature_file(qu,bitslice,qnum))           
+                      
         if method==3 or method==-1:
             
             #find the max value element in transactions array
