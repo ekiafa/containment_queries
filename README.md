@@ -8,19 +8,21 @@ Containment methods assignment in the context of Complex Data Management course 
       <li>  queries.txt</li>
    </ul>
 <h3>Program file:</h3>
-   <li>  containment_queries.py : File with 4 methods implementation, data management and file making for some of methods.Bitwise operations are supported.</li>
-   <p>      </p>
+      <li>  containment_queries.py : File with 4 methods implementation, data management and file making for some of methods.Bitwise operations are supported.</li>
+      <p>      </p>
    <h3>qnum</h3>
    <ul>
       <li>call all the queries with qnum=-1 </li>
       <li>call one of them by giving as input number >=0  </li>
    </ul>
    <h3>methods</h3>
-   <li>call naive only with method=0</li>
-   <li>call exact signature only with method=1</li>
-   <li>call exact bitslice signature file only with method=2</li>
-   <li>call invertedfile only with method=3</li>
-   <li>call all of them with method=-1</li>
+   <ul>
+      <li>call naive only with method=0</li>
+      <li>call exact signature only with method=1</li>
+      <li>call exact bitslice signature file only with method=2</li>
+      <li>call invertedfile only with method=3</li>
+      <li>call all of them with method=-1</li>
+   </ul>
    <p>      </p>
    
  > python3 containment_queries.py transactions.txt queries.txt qnum method  
