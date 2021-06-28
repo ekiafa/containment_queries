@@ -3,9 +3,10 @@ Containment methods assignment in the context of Complex Data Management course 
 
 
 <h3>Input files:</h3>
-   <li>  transactions.txt</li>
-   <li>  queries.txt</li>
-
+   <ul>
+      <li>  transactions.txt</li>
+      <li>  queries.txt</li>
+   </ul>
 <h3>Program file:</h3>
    <li>  containment_queries.py : File with 4 methods implementation, data management and file making for some of methods.Bitwise operations are supported.</li>
    <p>      </p>
