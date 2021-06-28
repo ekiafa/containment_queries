@@ -7,7 +7,7 @@ Containment methods assignment in the context of Complex Data Management course 
    <li>  queries.txt</li>
 
 <h3>Program file:</h3>
-   <li>  containment_queries.py : There is a script that allow us to organise our input files to a central construction in out.txt file.</li>
+   <li>  containment_queries.py : File with 4 methods implementation, data management and file making for some of methods.Bitwise operations are supported.</li>
    <p>      </p>
    <h3>qnum</h3>
    <li>call all the queries with qnum=-1 </li>
