@@ -123,11 +123,17 @@ def exact_signature_file(qu,sigfile,qnum):
     if qnum==-1:
         sys.stdout=open("sigfile.txt",mode="w")
         print("Exact signature file method result :")
-        for i in res:
-            print (str(i)+":"+ str(res[i]))
+        for i in sigfile:
+            print (str(i)+":"+ str(int(sigfile[i],2)))
         
         sys.stdout=original_stdout
     else:
+        sys.stdout=open("sigfile.txt",mode="w")
+        print("Exact signature file method result :")
+        for i in sigfile:
+            print (str(i)+":"+ str(int(sigfile[i],2)))
+        
+        sys.stdout=original_stdout
         print("Exact signature file method result :")
         print(res)
     return t
@@ -190,13 +196,21 @@ def exact_bitslice_signature_file(qu,bitslice,qnum):
         sys.stdout=open("bitslice.txt",mode="w")
         sys.stdout.write('\n')
         print("Exact bitslice signature file method result :")
-        for i in res:
-            print (str(i)+":"+ str(res[i]))
+        for i in bitslice:
+            print (str(i)+":"+ str(bitslice[i]))
         
         sys.stdout=original_stdout
     else:
         print("Exact bitslice signature file method result :")
         print(res)
+        sys.stdout=open("bitslice.txt",mode="w")
+        sys.stdout.write('\n')
+        print("Exact bitslice signature file method result :")
+        for i in bitslice:
+            print (str(i)+":"+ str(bitslice[i]))
+        
+        sys.stdout=original_stdout
+
     return t
 
 
@@ -206,20 +220,21 @@ def exact_bitslice_signature_file(qu,bitslice,qnum):
 ############################################
 
 
-"""
+
 def intersection(a, b, n, m):
-    '''
-    :param a: given sorted array a
-    :param n: size of sorted array a
-    :param b: given sorted array b
-    :param m: size of sorted array b
-    :return: array of inter of two array or -1
-    '''
+    
+    #a: given sorted array a
+    #n: size of sorted array a
+    #b: given sorted array b
+    #m: size of sorted array b
+    #return: array of inter of two array or -1
+    
  
     inter = []
     i = j = 0
      
     while i < n and j < m:
+        
         if a[i] == b[j]:
  
             # If duplicate already present in inter list
@@ -240,41 +255,66 @@ def intersection(a, b, n, m):
     if not len(inter):
         return [-1]
     return inter   
-"""
+
+
 def inverted_file(qu,trans_element_list,qnum):
     start=time.time()
     global res
     if int(qnum)==-1:
         res={}
-        counter_qu=-1
         for i in qu:
-            counter_qu+=1
-            counter=-1
-            for j in i:
-                counter+=1
-                if counter==0:
-                    m_res=intersection(trans_element_list[j],trans_element_list[j+1],len(trans_element_list[j]),len(trans_element_list[j+1]))
-                else:
-                    m_res=intersection(m_res,trans_element_list[j],len(m_res),len(trans_element_list[j]))
-            res[i]=m_res   
+           
+            for j in qu[i]:
+                counter=-1
+                qu_list=[]
+                for k in qu[i]:
+                    qu_list.append(trans_element_list[k])
+                for p in range(0,len(qu_list)-1):
+                    
+                    counter+=1
+                    if counter==0:
+                        m_res=intersection(qu_list[p],qu_list[p+1],len(qu_list[p]),len(qu_list[p+1]))
+                    
+                    else:
+                        m_res=intersection(m_res,qu_list[p],len(m_res),len(qu_list[p]))
+                        
+            res[i]=m_res 
     else:
         res=[]
 
         counter=-1
+        qu_list=[]
         for j in qu[qnum]:
+            qu_list.append(trans_element_list[j])
+        for i in range(0,len(qu_list)):
+            
             counter+=1
             if counter==0:
-                m_res=intersection(trans_element_list[j],trans_element_list[j+1],len(trans_element_list[j]),len(trans_element_list[j+1]))
+                m_res=intersection(qu_list[i],qu_list[i+1],len(qu_list[i]),len(qu_list[i+1]))
+            
             else:
-                m_res=intersection(m_res,trans_element_list[j],len(m_res),len(trans_element_list[j]))
+                m_res=intersection(m_res,qu_list[i],len(m_res),len(qu_list[i]))
+                        
         res=m_res
+
+
+
+
     t=time.time()-start      
     if qnum==-1:
         sys.stdout=open("invfile.txt",mode="w")
         print("Inverted file method result :")
-        print(res)
+        for i in trans_element_list:
+            print (str(i)+":"+ str(trans_element_list[i]))
+        
         sys.stdout=original_stdout
     else:
+        sys.stdout=open("invfile.txt",mode="w")
+        print("Inverted file method result :")
+        for i in trans_element_list:
+            print (str(i)+":"+ str(trans_element_list[i]))
+        
+        sys.stdout=original_stdout
         print("Inverted file method result :")
         print(qnum,":",res)
     return t  
@@ -304,12 +344,12 @@ def main():
                 for line in trans:
                    counter+=1
                    tr[counter]=literal_eval(line.rstrip("\n"))
-                   #tr.append(literal_eval(line.rstrip("\n")))
+                  
                 counter=-1
                 for line in q:
-                    counter+=1
-                    qu[counter]=literal_eval(line.rstrip("\n"))
-                    #qu.append(literal_eval(q.readline().rstrip("\n")))
+                   counter+=1
+                   qu[counter]=literal_eval(line.rstrip("\n"))
+                
         qnum=int(qnum)
         method=int(method)
         global original_stdout
@@ -342,7 +382,7 @@ def main():
                 sigfile[str(counter)]="".join(string_sig[::-1])
                 
             
-           
+
             print("Exact signature file method computation time =",exact_signature_file(qu,sigfile,qnum))
 
         if method==2 or method==-1 :
@@ -361,26 +401,24 @@ def main():
                     if i in tr[j]:
                         bitslice[i]+=pow(2,j)
 
-    
             print("Exact bitslice signature file method computation time =",exact_bitslice_signature_file(qu,bitslice,qnum))           
                       
         if method==3 or method==-1:
             
             #find the max value element in transactions array
-            m = max(map(max, tr))
+            m = max(i for v in tr.values() for i in v)
             trans_element_list={}
             # list for each transaction construction
             
             for i in range(0,m+1):
                 trans_element_list[i]=[]
-                counter=-1
+                
                 for j in tr:
-                    counter+=1
-                    if i in j:
+                
+                    if i in tr[j]:
                         
-                        trans_element_list[i].append(counter)
+                        trans_element_list[i].append(j)
 
-            
             print("Inverted file method computation time =",inverted_file(qu,trans_element_list,qnum))                
 
 
