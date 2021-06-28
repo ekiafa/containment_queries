@@ -8,7 +8,9 @@ Containment methods assignment in the context of Complex Data Management course 
       <li>  queries.txt</li>
    </ul>
 <h3>Program file:</h3>
-      <li>  containment_queries.py : File with 4 methods implementation, data management and file making for some of methods.Bitwise operations are supported.</li>
+      <ul>
+         <li>  containment_queries.py : File with 4 methods implementation, data management and file making for some of methods.Bitwise operations are supported.</li>
+      </ul>
       <p>      </p>
    <h3>qnum</h3>
    <ul>
